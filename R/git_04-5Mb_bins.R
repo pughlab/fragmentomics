@@ -1,6 +1,6 @@
 # file: git_05-5Mb_bins.R
 # author: Derek Wong, Ph.D
-# date: June 8th, 2021
+# date: June 15th, 2021
 
 ## Generate raw 100kb bin file
 tib.list <- as_tibble(AB)
@@ -156,6 +156,7 @@ df.fr3 <- df.fr2 %>% group_by(id, seqnames, arm, combine) %>%
             nfrags.corrected2=sum(nfrags.corrected, na.rm=TRUE),
             coverage2=mean(coverage, na.rm=TRUE),
             coverage.corrected2=mean(coverage.corrected, na.rm=TRUE),
+            combined2=mean(combined, na.rm=TRUE),
             short.var=var(short.corrected, na.rm=TRUE),
             long.var=var(long.corrected, na.rm=TRUE),
             nfrags.var=var(nfrags.corrected, na.rm=TRUE),
@@ -175,6 +176,7 @@ df.fr3 <- df.fr3 %>% group_by(id) %>% mutate(bin = 1:length(id))
 ## Center and scale fragment and coverage ratios
 df.fr3$ratio.centered <- ((df.fr3$ratio.corrected2 - mean(df.fr3$ratio.corrected2))/sd(df.fr3$ratio.corrected2))*0.01
 df.fr3$coverage.centered <- ((df.fr3$coverage.corrected2 - mean(df.fr3$coverage.corrected2))/sd(df.fr3$coverage.corrected2))*0.01
+df.fr3$combined.centered <- ((df.fr3$combined2 - mean(df.fr3$combined2))/sd(df.fr3$combined2))*0.01
 
 ### Rename and reorder dataframe
 df.fr3 <- df.fr3 %>%
@@ -194,6 +196,8 @@ df.fr3 <- df.fr3 %>%
     nfrags_var = nfrags.var,
     ratio_centered = ratio.centered,
     coverage_centered = coverage.centered,
+    combined = combined2,
+    combined_centered = combined.centered,
     frag_gc = frag.gc2,
     coverage = coverage2
   )
@@ -201,7 +205,8 @@ df.fr3 <- df.fr3 %>%
 df.fr3 <- df.fr3 %>%
   relocate(sample_id, seqnames, arm, start, end, gc, frag_gc, short, long, nfrags, ratio,
            short_corrected, long_corrected, nfrags_corrected, ratio_corrected, ratio_centered, 
-           coverage, coverage_corrected, coverage_centered, short_var, long_var, nfrags_var, 
-           mode_size,mean_size, median_size, q25_size, q75_size, binsize, bin)
+           coverage, coverage_corrected, coverage_centered, combined, combined_centered,
+           short_var, long_var, nfrags_var, mode_size,mean_size, median_size, q25_size, q75_size, 
+           binsize, bin)
 
 write.table(df.fr3, file.path(outdir, paste0(id, "_5Mb_bins")), sep = "\t")

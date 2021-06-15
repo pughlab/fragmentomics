@@ -1,6 +1,6 @@
 # file: git_04-100kb_bins.R
 # author: Derek Wong, Ph.D
-# date: June 9th, 2021
+# date: June 15th, 2021
 
 ## GC correct function
 gc.correct <- function(coverage, bias) {
@@ -19,14 +19,10 @@ gc.pred <- function(coverage, bias) {
   coverage.pred <- predict(coverage.model, bias)
 }
 
-###
-filters <- file.path(filters)
-gaps <- file.path(gaps)
-tiles <- file.path(tiles)
-
 ## Load in gaps, filters, and tiles
 load(filters)
 load(gaps)
+load(VNTRs)
 hsapiens <- BSgenome.Hsapiens.UCSC.hg38::Hsapiens
 AB <- read.table(tiles, col.names = c("chrom", "chromStart", "chromEnd", "Seqlength"))
 
@@ -55,10 +51,36 @@ seqinfo(AB) <- seqinfo(hsapiens)[seqlevels(seqinfo(AB))]
 AB <- trim(AB)
 AB$gc <- GCcontent(hsapiens, AB)
 
-### Filter fragments into 100kb bins
-fragments <- frags[-queryHits(findOverlaps(frags, filters.hg38))]
-w <- width(fragments)
+rm(chromosomes, tcmeres, arms, armlevels)
 
+## Filter fragments into 100kb bins
+fragments <- frags[-queryHits(findOverlaps(frags, filters.hg38))]
+fragments <- fragments[queryHits(findOverlaps(fragments, AB))]
+fragments <- fragments[-queryHits(findOverlaps(fragments, VNTRs.hg38))]
+rm(frags)
+
+## Calculate coverage stats
+bamCov <- coverage(fragments)
+mean <- mean(bamCov)
+sd <- sd(bamCov)
+max <- max(bamCov)
+
+## Set cutoff and filter high coverage areas (VNTRs)
+cutoff <- ceiling(median(quantile(bamCov, 0.9999)))
+adjust <- ceiling(10*log2(median(mean)+1))
+cutoff <- cutoff + ifelse(adjust > 5, adjust, 5)
+high_cov_regions <- slice(bamCov, lower = cutoff)
+high_cov_regions <- ranges(high_cov_regions)
+export.bed(high_cov_regions, file.path(outdir, paste0(id, "_highcovregions.bed")))
+
+## Generate QC report
+QC_matrix <- data.frame(mean, sd, max)
+write.table(QC_matrix, file.path(outdir, paste0(id, "_cov_stats.txt")), sep = "\t")
+
+rm(adjust, cutoff, max, mean, sd, high_cov_regions, bamCov, QC_matrix)
+
+## Count fragment sizes per bin
+w <- width(fragments)
 frag.list <- split(fragments, w)
 
 counts <- sapply(frag.list, function(x) countOverlaps(AB, x))
@@ -82,6 +104,8 @@ gc <- as.vector(AB$gc)
 bingc <- ifelse(is.na(bingc), gc, bingc)
 bingc <- ifelse(bingc < min(gc), gc, bingc)
 bingc <- ifelse(bingc > max(gc), gc, bingc)
+
+rm(filters.hg38, gaps.hg38, VNTRs.hg38, frag.list, fragments, bin.list, olaps)
 
 ## Calculate fragment statistics
 Mode <- function(x) {
@@ -109,10 +133,12 @@ long.corrected <- gc.correct(long, bingc)
 nfrags.corrected <- gc.correct(short+long, bingc)
 ratio.corrected <- gc.correct(ratio, bingc)
 coverage.corrected <- gc.correct(coverage, bingc)
+combined.corrected <- gc.correct(combined, bingc)
 short.predicted <- gc.pred(short, bingc)
 long.predicted <- gc.pred(long, bingc)
 nfrags.predicted <- gc.pred(short+long, bingc)
 coverage.predicted <- gc.pred(coverage, bingc)
+combined <- ratio.corrected*coverage.corrected
 
 ## Append fragment information
 AB$short <- short
@@ -120,11 +146,13 @@ AB$long <- long
 AB$ratio <- ratio
 AB$nfrags <- short+long
 AB$coverage <- coverage
+AB$combined <- combined
 AB$short.corrected <- short.corrected
 AB$long.corrected <- long.corrected
 AB$nfrags.corrected <- nfrags.corrected
 AB$ratio.corrected <- ratio.corrected
 AB$coverage.corrected <- coverage.corrected
+AB$combined.corrected <- combined.corrected
 AB$short.predicted <- short.predicted
 AB$long.predicted <- long.predicted
 AB$nfrags.predicted <- nfrags.predicted
@@ -140,3 +168,7 @@ AB$frag.gc <- bingc
 AB$id <- id
 
 for(i in 1:ncol(counts)) elementMetadata(AB)[,colnames(counts)[i]] <- counts[,i]
+
+rm(coverage, coverage.corrected, coverage.predicted, gc, i, long, long.corrected, long.predicted,
+   medians, modes, nfrags, nfrags.corrected, nfrags.predicted, q25, q75, ratio, ratio.corrected,
+   short, short.corrected, short.predicted, gc.correct, gc.pred, Mode, combined, bingc, w, counts)

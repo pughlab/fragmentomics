@@ -1,11 +1,8 @@
 # file: git_03-mito_frag.R
 # author: Derek Wong, Ph.D
-# date: June 8th, 2021
+# date: June 10th, 2021
 
 ## Extract Mitochondrial reads
-mito <- granges(keepSeqlevels(galp, paste0("chrM"), pruning.mode="coarse"),
-                 on.discordant.seqnames="drop")
-rm(galp)
 mt_nFrag <- length(mito)
 mt_width <- width(mito)
 rm(mito)
@@ -21,9 +18,12 @@ mt_short <- count(mt_width <= 150)
 mt_long <- count(mt_width > 150)
 mt_ratio <- mt_short/mt_long
 mt_coverage <- sum(mt_width)/16569
-mt_fraction <- mt_nFrag/nFrags
+mt_fraction <- mt_nFrag/length(galp)
 
 ## Generate mitochondrial report
 mt_matrix <- data.frame(mt_short, mt_long, mt_nFrag, mt_ratio, mt_coverage, mt_fraction, mt_median,
                        mt_mean, mt_mode, mt_lower_quartile, mt_upper_quartile)
-write.table(mito.list, file.path(outdir, paste0(id, "mito_stats.txt")))
+write.table(mt_matrix, file.path(outdir, paste0(id, "_mito_stats.txt")), sep = "\t")
+
+rm(mt_median, mt_mean, dens, mt_mode, mt_lower_quartile, mt_upper_quartile, mt_short, mt_long, 
+   mt_ratio, mt_coverage, mt_fraction, mt_nFrag, mt_width, mt_matrix)

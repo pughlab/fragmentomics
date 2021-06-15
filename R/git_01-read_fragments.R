@@ -17,3 +17,17 @@ param <- ScanBamParam(flag = scanBamFlag(isPaired = TRUE,
                       mapqFilter = 30)
 
 galp <- readGAlignmentPairs(bamfile, param = param)
+rm(param, indexed.bam)
+
+## Filter reads: 90-220bp on Autosomes and mitochondrial reads
+frags <- granges(keepSeqlevels(galp, paste0("chr", 1:22), pruning.mode="coarse"),
+                 on.discordant.seqnames="drop")
+mito <- granges(keepSeqlevels(galp, paste0("chrM"), pruning.mode="coarse"),
+                on.discordant.seqnames="drop")
+rm(galp)
+w.all <- width(frags)
+frags <- frags[which(w.all >= 90 & w.all <= 220)]
+rm(w.all)
+gcs <- GCcontent(Hsapiens, unstrand(frags))
+frags$gc <- gcs
+rm(gcs)
