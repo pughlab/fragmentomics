@@ -1,6 +1,6 @@
 # file: 00-filtered_regions.R
 # author: Derek Wong, Ph.D
-# date: June 15th, 2021
+# date: June 16th, 2021
 
 library(BSgenome.Hsapiens.UCSC.hg38)
 library(rtracklayer)
@@ -43,7 +43,7 @@ save(filters.hg38, file="filters.hg38.rda")
 
 ### Generate VNTR list file
 VNTRs.tib <- read_tsv("VNTRs.hg38.bed",
-                      col_names = c("seqnames", "start", "end", "X", "Y", "Z"))
+                      col_names = c("seqnames", "start", "end", "sequence"))
 VNTRs.tib <- VNTRs.tib %>% mutate(start=start)
 VNTRs.hg38 <- makeGRangesFromDataFrame(VNTRs.tib,
                                        keep.extra.columns=FALSE)

@@ -1,11 +1,11 @@
 # file: git_05-5Mb_bins.R
 # author: Derek Wong, Ph.D
-# date: June 15th, 2021
+# date: June 16th, 2021
 
 ## Generate raw 100kb bin file
 tib.list <- as_tibble(AB)
 rm(AB)
-write.table(tib.list, file.path(outdir, paste0(id, "_100kb_bins")), sep = "\t")
+write.table(tib.list, file.path(outdir, paste0(id, "_100kb_bins.txt")), sep = "\t")
 tib.list <- tib.list %>% dplyr::select(-matches("X"))
 
 ## Plot GC Correction metrics
@@ -209,4 +209,4 @@ df.fr3 <- df.fr3 %>%
            short_var, long_var, nfrags_var, mode_size,mean_size, median_size, q25_size, q75_size, 
            binsize, bin)
 
-write.table(df.fr3, file.path(outdir, paste0(id, "_5Mb_bins")), sep = "\t")
+write.table(df.fr3, file.path(outdir, paste0(id, "_5Mb_bins.txt")), sep = "\t")

@@ -133,7 +133,6 @@ long.corrected <- gc.correct(long, bingc)
 nfrags.corrected <- gc.correct(short+long, bingc)
 ratio.corrected <- gc.correct(ratio, bingc)
 coverage.corrected <- gc.correct(coverage, bingc)
-combined.corrected <- gc.correct(combined, bingc)
 short.predicted <- gc.pred(short, bingc)
 long.predicted <- gc.pred(long, bingc)
 nfrags.predicted <- gc.pred(short+long, bingc)
@@ -146,13 +145,12 @@ AB$long <- long
 AB$ratio <- ratio
 AB$nfrags <- short+long
 AB$coverage <- coverage
-AB$combined <- combined
 AB$short.corrected <- short.corrected
 AB$long.corrected <- long.corrected
 AB$nfrags.corrected <- nfrags.corrected
 AB$ratio.corrected <- ratio.corrected
 AB$coverage.corrected <- coverage.corrected
-AB$combined.corrected <- combined.corrected
+AB$combined <- combined
 AB$short.predicted <- short.predicted
 AB$long.predicted <- long.predicted
 AB$nfrags.predicted <- nfrags.predicted

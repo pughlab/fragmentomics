@@ -1,6 +1,6 @@
 # file: git_01-read_bam.R
 # author: Derek Wong, Ph.D
-# date: June 8th, 2021
+# date: June 16th, 2021
 
 ## Read GAlignmentPairs
 bamfile <- file.path(bamdir, paste0(id, ".bam"))
@@ -24,6 +24,7 @@ frags <- granges(keepSeqlevels(galp, paste0("chr", 1:22), pruning.mode="coarse")
                  on.discordant.seqnames="drop")
 mito <- granges(keepSeqlevels(galp, paste0("chrM"), pruning.mode="coarse"),
                 on.discordant.seqnames="drop")
+length <- length(galp)
 rm(galp)
 w.all <- width(frags)
 frags <- frags[which(w.all >= 90 & w.all <= 220)]

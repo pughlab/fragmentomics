@@ -1,9 +1,10 @@
 # file: runFrag.R
 # author: Derek Wong, Ph.D
-# date: June 15th, 2021
+# date: June 16th, 2021
 
 library(optparse)
 
+## Set script variables
 option_list <- list(
   make_option(c("--id"), type = "character", help = "sample id. Required"),
   make_option(c("--bamdir"), type = "character", help = "Path to bam files. Required."),
@@ -20,6 +21,7 @@ opt <- parse_args(parseobj)
 print(opt)
 options(scipen=0, stringsAsFactors=F)
 
+## Load required packages
 library(tidyverse)
 library(multidplyr)
 library(Rsamtools)
@@ -35,6 +37,7 @@ class(Homo.sapiens)
 options(stringsAsFactors=FALSE)
 options(bitmapType='cairo')
 
+## Get variables from input script
 id <- opt$id
 bamdir <- opt$bamdir
 filters <- opt$filters
@@ -42,9 +45,13 @@ gaps <- opt$gaps
 tiles <- opt$tiles
 VNTRs <- opt$VNTRs
 #healthy <- opt$healthy
-outdir <- opt$outdir
 libdir <- opt$libdir
+outdir <- file.path(opt$outdir, id)
 
+## Create output directory
+dir.create(outdir)
+
+## Run scripts
 source(paste0(libdir,"/R/git_01-read_fragments.R"))
 source(paste0(libdir,"/R/git_02-mito_frag.R"))
 source(paste0(libdir,"/R/git_03-100kb_bins.R"))
