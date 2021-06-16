@@ -20,10 +20,10 @@ Rscript runFrag.R\
  --outdir <path/to/output_directory>\
  --libdir <path/to/fragmentomics>
  ```
+This tool is memory intensive for large bam files.
  
- This tool is memory intensive for large bam files.
- Filters, gaps, VNTRs, and tiles files for hg38 can be found in the extdata folder.
- Scripts to generate your own filters, gaps, VNTRs can be found in the filtered_regions folder.
+Filters, gaps, VNTRs, and tiles files for hg38 can be found in the extdata folder.
+Scripts to generate your own filters, gaps, VNTRs can be found in the filtered_regions folder.
  
- Healthy median was generated using healthy control plasmas from the pughlab.
- Scripts to generate your own health median can be found in the healthy_median folder.
+Healthy median was generated using healthy control plasmas from the pughlab.
+Scripts to generate your own health median can be found in the healthy_median folder.
