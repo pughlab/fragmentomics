@@ -1,6 +1,6 @@
 # file: git_04-100kb_bins.R
 # author: Derek Wong, Ph.D
-# date: June 15th, 2021
+# date: July 23rd, 2021
 
 ## GC correct function
 gc.correct <- function(coverage, bias) {
@@ -65,7 +65,7 @@ mean <- mean(bamCov)
 sd <- sd(bamCov)
 max <- max(bamCov)
 
-## Set cutoff and filter high coverage areas (VNTRs)
+## Set cutoff and report coverage
 cutoff <- ceiling(median(quantile(bamCov, 0.9999)))
 adjust <- ceiling(10*log2(median(mean)+1))
 cutoff <- cutoff + ifelse(adjust > 5, adjust, 5)
@@ -80,6 +80,8 @@ write.table(QC_matrix, file.path(outdir, paste0(id, "_cov_stats.txt")), sep = "\
 rm(adjust, cutoff, max, mean, sd, high_cov_regions, bamCov, QC_matrix)
 
 ## Count fragment sizes per bin
+w.all <- width(fragments)
+fragments <- fragments[which(w.all >= 90 & w.all <= 220)]
 w <- width(fragments)
 frag.list <- split(fragments, w)
 
@@ -119,24 +121,25 @@ q75 <- quantile(w, 0.75)
 
 short <- rowSums(counts[,1:61])
 long <- rowSums(counts[,62:121])
-long <- ifelse(long < mean(long)-(sd(long)*3), NA, long)
-short <- ifelse(is.na(long), NA, short)
 ratio <- short/long
 ratio[is.nan(ratio)] <- NA
 ratio[is.infinite(ratio)] <- NA
 nfrags <- short+long
-coverage <- short/sum(nfrags, na.rm=TRUE)
+coverage <- nfrags/sum(nfrags, na.rm=TRUE)
 
 ## GC correction and prediction
 short.corrected <- gc.correct(short, bingc)
 long.corrected <- gc.correct(long, bingc)
-nfrags.corrected <- gc.correct(short+long, bingc)
-ratio.corrected <- gc.correct(ratio, bingc)
-coverage.corrected <- gc.correct(coverage, bingc)
 short.predicted <- gc.pred(short, bingc)
 long.predicted <- gc.pred(long, bingc)
 nfrags.predicted <- gc.pred(short+long, bingc)
 coverage.predicted <- gc.pred(coverage, bingc)
+
+short.corrected <- ifelse(short.corrected <= 0, 0, short.corrected)
+long.corrected <- ifelse(long.corrected <= 0, NA, long.corrected)
+nfrags.corrected <- short.corrected+long.corrected
+ratio.corrected <- short.corrected/long.corrected
+coverage.corrected <- nfrags.corrected/sum(nfrags.corrected, na.rm=TRUE)
 combined <- ratio.corrected*coverage.corrected
 
 ## Append fragment information

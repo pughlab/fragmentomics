@@ -1,11 +1,11 @@
 # file: git_05-5Mb_bins.R
 # author: Derek Wong, Ph.D
-# date: June 16th, 2021
+# date: August 4th, 2021
 
 ## Generate raw 100kb bin file
 tib.list <- as_tibble(AB)
 rm(AB)
-write.table(tib.list, file.path(outdir, paste0(id, "_100kb_bins.txt")), sep = "\t")
+write.table(tib.list, file.path(outdir, paste0(id, "_100kb_bins.txt")), sep = "\t", row.names = FALSE)
 tib.list <- tib.list %>% dplyr::select(-matches("X"))
 
 ## Plot GC Correction metrics
@@ -141,7 +141,7 @@ df.fr2$arm <- factor(df.fr2$arm, levels=armlevels)
 ## smaller than 5mb.
 df.fr2 <- df.fr2 %>% group_by(arm) %>%
   mutate(combine = ifelse(grepl("p", arm), ceiling((1:length(arm))/50),
-                          ceiling(rev((1:length(arm))/50) )))
+                          ceiling((1:length(arm))/50) ))
 
 df.fr3 <- df.fr2 %>% group_by(id, seqnames, arm, combine) %>%
   dplyr::summarize(short2=sum(short, na.rm=TRUE),
@@ -150,13 +150,8 @@ df.fr3 <- df.fr2 %>% group_by(id, seqnames, arm, combine) %>%
             long.corrected2=sum(long.corrected, na.rm=TRUE),
             gc=mean(C.G, na.rm=TRUE),
             frag.gc2=mean(frag.gc, na.rm=TRUE),
-            ratio2=mean(ratio, na.rm=TRUE),
-            ratio.corrected2=mean(ratio.corrected, na.rm=TRUE),
             nfrags2=sum(nfrags, na.rm=TRUE),
             nfrags.corrected2=sum(nfrags.corrected, na.rm=TRUE),
-            coverage2=mean(coverage, na.rm=TRUE),
-            coverage.corrected2=mean(coverage.corrected, na.rm=TRUE),
-            combined2=mean(combined, na.rm=TRUE),
             short.var=var(short.corrected, na.rm=TRUE),
             long.var=var(long.corrected, na.rm=TRUE),
             nfrags.var=var(nfrags.corrected, na.rm=TRUE),
@@ -168,6 +163,12 @@ df.fr3 <- df.fr2 %>% group_by(id, seqnames, arm, combine) %>%
             start=start[1],
             end=rev(end)[1],
             binsize = n())
+
+df.fr3$ratio2 <- df.fr3$short2/df.fr3$long2
+df.fr3$ratio.corrected2 <- df.fr3$short.corrected2/df.fr3$long.corrected2
+df.fr3$coverage2 <- df.fr3$short2/sum(df.fr3$nfrags2)
+df.fr3$coverage.corrected2 <- df.fr3$short.corrected2/sum(df.fr3$nfrags.corrected2)
+df.fr3$combined2 <- df.fr3$ratio.corrected2*df.fr3$coverage.corrected2
 
 ## Assign bins
 df.fr3 <- df.fr3 %>% filter(binsize==50)
@@ -209,4 +210,4 @@ df.fr3 <- df.fr3 %>%
            short_var, long_var, nfrags_var, mode_size,mean_size, median_size, q25_size, q75_size, 
            binsize, bin)
 
-write.table(df.fr3, file.path(outdir, paste0(id, "_5Mb_bins.txt")), sep = "\t")
+write.table(df.fr3, file.path(outdir, paste0(id, "_5Mb_bins.txt")), sep = "\t", row.names = FALSE)
