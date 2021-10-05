@@ -1,6 +1,6 @@
 # file: runFrag.R
 # author: Derek Wong, Ph.D
-# date: June 16th, 2021
+# date: October 5th, 2021
 
 library(optparse)
 
@@ -39,7 +39,7 @@ options(bitmapType='cairo')
 
 ## Get variables from input script
 id <- opt$id
-bamdir <- opt$bamdir
+bam <- opt$bam
 filters <- opt$filters
 gaps <- opt$gaps
 tiles <- opt$tiles

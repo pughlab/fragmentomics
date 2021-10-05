@@ -1,10 +1,9 @@
 # file: git_01-read_bam.R
 # author: Derek Wong, Ph.D
-# date: June 16th, 2021
+# date: October 5th, 2021
 
 ## Read GAlignmentPairs
-bamfile <- file.path(bamdir, paste0(id, ".bam"))
-indexed.bam <- gsub("$", ".bai", bamfile)
+indexed.bam <- gsub("$", ".bai", bam)
 if (!file.exists(indexed.bam)) {
   indexBam(bamfile)
 }
@@ -16,7 +15,7 @@ param <- ScanBamParam(flag = scanBamFlag(isPaired = TRUE,
                                          isUnmappedQuery = FALSE),
                       mapqFilter = 30)
 
-galp <- readGAlignmentPairs(bamfile, param = param)
+galp <- readGAlignmentPairs(bam, param = param)
 rm(param, indexed.bam)
 
 ## Filter reads: 90-220bp on Autosomes and mitochondrial reads
