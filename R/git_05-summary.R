@@ -1,6 +1,6 @@
 # file: git_05-summary.R
 # author: Derek Wong, Ph.D
-# date: August 4th, 2021
+# date: October 14th, 2021
 
 ## Load in healthy controls
 load(healthy)
@@ -64,6 +64,6 @@ colnames(summary_df) <- c("correlation_to_median", "sd_from_median")
 
 ## Write summary tables
 write.table(distance, file.path(outdir, paste0(id, "_5Mb_dist.txt")), sep = "\t", row.names = FALSE)
-write.table(summary_df, file.path(outdir, paste0(id, "_summary.txt")), sep = "\t", row.names = FALSE)
+write.table(summary_df, file.path(outdir, paste0(id, "_summary.txt")), sep = "\t")
 
 rm(correlations, distance, summary_df, sd_dist)
