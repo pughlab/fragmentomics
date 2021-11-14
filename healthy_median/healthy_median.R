@@ -6,9 +6,9 @@ library(tidyverse)
 library(GenomicRanges)
 
 # Read in files and combine into data frame
-filedir <- "/Users/derekwong/Desktop/H4H/projects/NF1_MPNST_sWGS/fragmentomics/healthy_controls/5Mb_bins"
-outdir <- "/Users/derekwong/Desktop/fragmentomics/healthy_median/2021-08-04"
-files <- list.files(filedir, pattern = "_5Mb_bins.txt", full.names = TRUE)
+filedir <- "/Users/derekwong/Desktop/H4H/projects/Landau_HBC/fragmentomics/output"
+outdir <- "/Users/derekwong/Documents/GitHub/fragmentomics/healthy_median/"
+files <- list.files(filedir, pattern = "_5Mb_bins.txt", recursive = TRUE, full.names = TRUE)
 
 bins.list <- lapply(files, read.delim)
 tib.list <- lapply(bins.list, as_tibble)
