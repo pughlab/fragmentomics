@@ -103,6 +103,9 @@ bin.list <- split(fragments[queryHits(olaps)], subjectHits(olaps))
 bingc <- rep(NA, length(bin.list))
 bingc[unique(subjectHits(olaps))] <- sapply(bin.list, function(x) mean(x$gc))
 gc <- as.vector(AB$gc)
+while(length(bingc) < 26508){
+  bingc <- append(bingc, NA)
+  }
 bingc <- ifelse(is.na(bingc), gc, bingc)
 bingc <- ifelse(bingc < min(gc), gc, bingc)
 bingc <- ifelse(bingc > max(gc), gc, bingc)
