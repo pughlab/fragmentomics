@@ -3,6 +3,7 @@
 # date: October 5th, 2021
 
 ## Read GAlignmentPairs
+bamfile <- file.path(bamdir, paste0(id, ".bam"))
 indexed.bam <- gsub("$", ".bai", bam)
 if (!file.exists(indexed.bam)) {
   indexBam(bamfile)
