@@ -16,7 +16,7 @@ param <- ScanBamParam(flag = scanBamFlag(isPaired = TRUE,
                                          isUnmappedQuery = FALSE),
                       mapqFilter = 30)
 
-galp <- readGAlignmentPairs(bam, param = param)
+galp <- readGAlignmentPairs(bamfile, param = param)
 rm(param, indexed.bam)
 
 ## Filter reads: 90-220bp on Autosomes and mitochondrial reads
