@@ -4,7 +4,7 @@
 
 ## Read GAlignmentPairs
 bamfile <- file.path(bamdir, paste0(id, ".bam"))
-indexed.bam <- gsub("$", ".bai", bam)
+indexed.bam <- gsub("$", ".bai", bamfile)
 if (!file.exists(indexed.bam)) {
   indexBam(bamfile)
 }
