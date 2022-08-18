@@ -7,7 +7,7 @@ library(optparse)
 ## Set script variables
 option_list <- list(
   make_option(c("--id"), type = "character", help = "sample id. Required"),
-  make_option(c("--bamdir"), type = "character", help = "Path to bam files. Required."),
+  make_option(c("--bam"), type = "character", help = "Path to bam files. Required."),
   make_option(c("--filters"), type = "character", help = "Path to genomic blacklist regions. Required."),
   make_option(c("--gaps"), type = "character", help = "Path to genome gaps. Required."),
   make_option(c("--tiles"), type = "character", help = "Path to 100kb tiled genome. Required."),
