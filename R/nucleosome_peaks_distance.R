@@ -14,7 +14,7 @@ option_list <- list(
 parseobj <- OptionParser(option_list=option_list)
 opt <- parse_args(parseobj)
 print(opt)
-options(scipen=0, stringsAsFactors=F)
+options(scipen=999, stringsAsFactors=F)
 
 ## Load required packages
 library(tidyverse)
