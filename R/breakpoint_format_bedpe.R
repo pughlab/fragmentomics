@@ -32,6 +32,8 @@ bedpe <- read.delim(bedpe_file, header = FALSE)
 chrs <- paste0("chr", c(1:22))
 bedpe <- bedpe[bedpe$V1 %in% chrs, ]
 bedpe <- bedpe[bedpe$V1 == bedpe$V4, ]
+bedpe$V2 <- ifelse(bedpe$V2 < bedpe$V3, bedpe$V2, bedpe$V3)
+bedpe$V5 <- ifelse(bedpe$V5 < bedpe$V6, bedpe$V5, bedpe$V6)
 bedpe <- bedpe[, c("V1", "V2", "V6")]
 bedpe <- bedpe[order(factor(bedpe$V1, levels = chrs),
                      bedpe$V2), ]
