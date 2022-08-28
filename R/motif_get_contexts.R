@@ -51,6 +51,7 @@ splits <- strsplit(fasta_3$V4, "")
 reversed <- lapply(splits, rev)
 concat <- lapply(reversed, function(x){paste(x, collapse = "")})
 fasta_3$V4 <- unlist(concat)
+fasta_3$V4 <- chartr("ATGC","TACG", fasta_3$V4)
 
 ### Count the motifs
 fasta <- bind_rows(fasta_5, fasta_3)
