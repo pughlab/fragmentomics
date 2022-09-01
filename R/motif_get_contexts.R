@@ -37,13 +37,13 @@ fasta_5$V4 <- toupper(fasta_5$V4)
 fasta_5 <- as.data.table(fasta_5)
 fasta_5 <- fasta_5[!(fasta_5$V4 %like% "N"), ]
 fasta_5$length <- nchar(fasta_5$V4)
-fasta_5 <- fasta_5[fasta_5$length == 4, ]
+#fasta_5 <- fasta_5[fasta_5$length == 4, ]
 
 fasta_3$V4 <- toupper(fasta_3$V4)
 fasta_3 <- as.data.table(fasta_3)
 fasta_3 <- fasta_3[!(fasta_3$V4 %like% "N"), ]
 fasta_3$length <- nchar(fasta_3$V4)
-fasta_3 <- fasta_3[fasta_3$length == 4, ]
+#fasta_3 <- fasta_3[fasta_3$length == 4, ]
 
 ### Reverse 3' end
 #fasta_3 <- fasta_3[1:1000, ] ### Use this for quick tests
