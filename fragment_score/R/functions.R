@@ -8,7 +8,6 @@
 # STEP 4: Determine Patient-level fragmentation score (FS)
 # STEP 5: Determine Variant-level fragmentation score (VFS)
 
-library(Rsamtools)
 
 ##############################################
 ################## STEP 1 ####################
@@ -17,7 +16,7 @@ library(Rsamtools)
 
 # Input required: VCF of tumour tissue data (germline variants and indels excluded). File name indicating corresponding plasma BAM file.
 
-GetTumourReads <- function(patientID, VCF, plasmaID) {
+GetTumourReads <- function(patientID="patient_ID", VCF="Tissue_VCF", plasmaID="Plasma sample identifier") {
   require(Rsamtools)
   
   if (nrow(VCF) == 0) {print(paste0("No variants in ", patientID))}
@@ -60,7 +59,7 @@ GetTumourReads <- function(patientID, VCF, plasmaID) {
 
 # Input required: File names indicating BAM file of healthy donor or patient with non-malignant disease. 
 
-GetHealthyReads <- function(ID) {
+GetHealthyReads <- function(ID="healthy_ID") {
   require(Rsamtools)
   bamfileP <- list.files(pattern="bam$")[grep(ID, list.files(pattern="bam$"))]
   bamfile <- BamFile(bamfileP, yieldSize = 5e8)
@@ -108,20 +107,28 @@ GenerateReferenceSet <- function(tlen="Tumour_lengths", hlen="Healthy_lengths") 
 
 # Input required: Reference dataset (from step 3 OR from pre-supplied data) and file names for plasma BAM files.
 
-GeneratePatientFS <- function(ref="Length_reference_dataset", plasmaID="Plasma sample identifier") {
+GeneratePatientFS <- function(ref="Length_reference_dataset", 
+                              plasmaID="Plasma sample identifier", 
+                              bamfile="Path to bamfile") {
   require(Rsamtools)
   
-  bamfile <- list.files(pattern="bam$")
-  bamfileP <- bamfile[grep(plasmaID, bamfile)]
-  indexx <- list.files(pattern="bai$")
-  indexx <- indexx[grep(plasmaID, indexx)]
+  bamfile <- bamfile
+  indexx <- paste0(bamfile, ".bai")
   
-  if (length(bamfileP) + length(indexx) != 2) {print(paste0("BAM file ", plasmaID, " not found, proceeding without."))}
+  if (length(bamfile) + length(indexx) != 2) {print(paste0("BAM file ", bamfile, " not found, proceeding without."))}
   else {
-    bamfile <- BamFile(bamfileP, yieldSize=1e6)
-    param <- ScanBamParam(what="isize")
+    bamfile <- BamFile(bamfile)
+    param <- ScanBamParam(what="isize",
+                          flag = scanBamFlag(isPaired = TRUE,
+                                             isProperPair = TRUE,
+                                             isDuplicate = FALSE,
+                                             isSecondaryAlignment = FALSE,
+                                             isUnmappedQuery = FALSE),
+                          mapqFilter = 30)
     reads <- scanBam(bamfile, param=param)
     lengths <- abs(reads[[1]]$isize)
+    lengths[is.na(lengths)] <- 0
+    lengths <- lengths[lengths < 900 & lengths > 0]
     PatientFS <- mean(ref[lengths])
     return(PatientFS)
   }

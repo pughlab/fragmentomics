@@ -1,6 +1,3 @@
-# file: runFrag.R
-# author: Derek Wong, Ph.D
-# date: October 5th, 2021
 
 library(optparse)
 

@@ -1,6 +1,4 @@
-# file: runFrag.R
-# author: Derek Wong, Ph.D
-# date: October 5th, 2021
+
 
 library(optparse)
 
@@ -33,8 +31,12 @@ outdir <- opt$outdir
 ## Import functions
 source(paste0(libdir,"/functions.R"))
 
+## Read in files
+reference <- read.delim(ref, header = FALSE)
+reference <- as.vector(reference$V1)
+
 ## Run script
-Patient_score <- GeneratePatientFS(ref, id, bam)
+Patient_score <- GeneratePatientFS(reference, bam)
 write.table(Patient_score, file.path(outdir, paste0(id, "_score.txt")), sep = "\t", row.names = FALSE)
 
 q('no')
