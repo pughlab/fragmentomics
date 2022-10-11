@@ -107,9 +107,7 @@ GenerateReferenceSet <- function(tlen="Tumour_lengths", hlen="Healthy_lengths") 
 
 # Input required: Reference dataset (from step 3 OR from pre-supplied data) and file names for plasma BAM files.
 
-GeneratePatientFS <- function(ref="Length_reference_dataset", 
-                              plasmaID="Plasma sample identifier", 
-                              bamfile="Path to bamfile") {
+GeneratePatientFS <- function(ref, bamfile) {
   require(Rsamtools)
   
   bamfile <- bamfile

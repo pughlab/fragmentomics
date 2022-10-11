@@ -15,12 +15,6 @@ opt <- parse_args(parseobj)
 print(opt)
 options(scipen=0, stringsAsFactors=F)
 
-## Load required packages
-library(tidyverse)
-library(multidplyr)
-library(Rsamtools)
-library(devtools)
-
 ## Get variables from input script
 id <- opt$id
 bam <- opt$bam
