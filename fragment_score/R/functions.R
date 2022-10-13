@@ -141,60 +141,65 @@ GeneratePatientFS <- function(ref, bamfile) {
 
 # Input required: Reference dataset (from step 3 OR from pre-supplied data), list of VCFs for plasma samples of the same patient (excluding germline variants and indels), and string of file names for plasma BAM files.
 
-GenerateVariantFS <- function(ref="Length_reference_dataset", VCFs="Plasma_VCFs (as list of data frames)", plasmaIDs="Plasma BAM identifiers (as string of IDs)") {
+GenerateVariantFS <- function(ref, VCF, bam_file, id) {
   require(dplyr)
   require(Rsamtools)
-  VCF <- bind_rows(VCFs)
   
   ## @USER: Line 145 refers to column names corresponding to Roche AVENIO VCFs. If the column names of your local pipeline are different, please change correspondingly
   ## @USER: Column V1 is the chromosome number, V2 is the chromosome position, V5 is the alternate base
-  variants <- unique(data.frame(CHR=VCF$V1, POS=VCF$V2, ALT=VCF$V5)) # generates df of all unique variants ever seen in plasma of this patient
+  variants <- unique(data.frame(CHR=VCF$CHROM, POS=VCF$POS, ALT=VCF$ALT)) # generates df of all unique variants ever seen in plasma of this patient
   
   if (nrow(variants) == 0) {print(paste0("No variants detected"))}
   else {
     all_lengths <- data.frame(NULL)
     
-    for (j in 1:length(plasmaIDs)) {
-      bamfile <- list.files(pattern="bam$")
-      bamfileP <- bamfile[grep(plasmaIDs[j], bamfile)]
-      indexx <- list.files(pattern="bai$")
-      indexx <- indexx[grep(plasmaIDs[j], indexx)]
+    bamfileP <- bam_file
+    indexx <- paste0(bam_file, ".bai")
+    
+    if (length(bamfileP) + length(indexx) != 2) {print(paste0("BAM file:", bamfileP, "not found, proceeding without."))}
+    else {
+      bamfile <- BamFile(bamfileP)
       
-      if (length(bamfileP) + length(indexx) != 2) {print(paste0("BAM file ", plasmaIDs[j], " not found, proceeding without."))}
-      else {
-        bamfile <- BamFile(bamfileP, yieldSize=5e8)
-        
-        print(paste0("Processing ", plasmaIDs[j]))
-        
-        param <- ScanBamParam(which=GRanges(variants$CHR, IRanges(start=variants$POS, end=variants$POS)), what=scanBamWhat())
-        bam <- scanBam(bamfile, param=param)
-        
-        ## Helper function to grab the lengths of the reads with tumour-derived mutations
-        FragmentsWithVariants2 <- function(Chr, Pos, Alt, i, Bam) {
-          base <- substring(as.character(Bam[[i]]$seq), Pos-Bam[[i]]$pos+1, Pos-Bam[[i]]$pos+1)
-          lengths <- abs(Bam[[i]]$isize[base == Alt])
-          res <- tibble(CHR=rep(Chr, length(lengths)), POS=rep(Pos, length(lengths)), ALT=rep(Alt, length(lengths)), LEN=lengths)
-          return(res)
-        }
-        
-        var_lengths <- as.data.frame(t(mapply(FragmentsWithVariants2, Chr=variants$CHR, Pos=as.numeric(variants$POS), Alt=variants$ALT, i=1:nrow(variants), MoreArgs=list(Bam=bam))))
-        var_lengths <- data.frame(cbind(CHR=unlist(var_lengths$CHR), 
-                                        POS=as.numeric(unlist(var_lengths$POS)), 
-                                        ALT=unlist(var_lengths$ALT), 
-                                        LEN=as.numeric(unlist(var_lengths$LEN)),
-                                        CNT=1))
-        rownames(var_lengths) <- NULL
-        var_lengths$FS <- ref[var_lengths$LEN]
-        
-        all_lengths <- rbind(all_lengths, var_lengths)
+      print(paste0("Processing ", bam_file))
+      
+      param <- ScanBamParam(what = scanBamWhat(),
+                            which = GRanges(variants$CHR, 
+                                            IRanges(start = variants$POS, 
+                                                    end = variants$POS)),
+                            flag = scanBamFlag(isPaired = TRUE,
+                                               isProperPair = TRUE,
+                                               isDuplicate = FALSE,
+                                               isSecondaryAlignment = FALSE,
+                                               isUnmappedQuery = FALSE),
+                            mapqFilter = 30)
+      bam <- scanBam(bamfile, param=param)
+      
+      ## Helper function to grab the lengths of the reads with tumour-derived mutations
+      FragmentsWithVariants2 <- function(Chr, Pos, Alt, i, Bam) {
+        base <- substring(as.character(Bam[[i]]$seq), Pos-Bam[[i]]$pos+1, Pos-Bam[[i]]$pos+1)
+        lengths <- abs(Bam[[i]]$isize[base == Alt])
+        res <- tibble(CHR=rep(Chr, length(lengths)), POS=rep(Pos, length(lengths)), ALT=rep(Alt, length(lengths)), LEN=lengths)
+        return(res)
       }
+      
+      var_lengths <- as.data.frame(t(mapply(FragmentsWithVariants2, Chr=variants$CHR, Pos=as.numeric(variants$POS), Alt=variants$ALT, i=1:nrow(variants), MoreArgs=list(Bam=bam))))
+      var_lengths <- data.frame(cbind(CHR=unlist(var_lengths$CHR), 
+                                      POS=as.numeric(unlist(var_lengths$POS)), 
+                                      ALT=unlist(var_lengths$ALT), 
+                                      LEN=as.numeric(unlist(var_lengths$LEN)),
+                                      CNT=1))
+      rownames(var_lengths) <- NULL
+      var_lengths$LEN <- as.numeric(var_lengths$LEN)
+      var_lengths$FS <- ref[var_lengths$LEN]
+      
+      all_lengths <- rbind(all_lengths, var_lengths)
     }
-    temp <- aggregate(all_lengths$FS, by=list(Category=paste(all_lengths$CHR, all_lengths$POS, all_lengths$ALT, sep="_")), FUN=mean)
-    var_scores <- cbind(unique(all_lengths[,1:3]),
-                        COUNT=aggregate(as.numeric(all_lengths$CNT), by=list(Category=paste(all_lengths$CHR, all_lengths$POS, all_lengths$ALT, sep="_")), FUN=sum)$x,
-                        VFS=temp$x)
-    return(var_scores)
   }
+  temp <- aggregate(all_lengths$FS, by=list(Category=paste(all_lengths$CHR, all_lengths$POS, all_lengths$ALT, sep="_")), FUN=mean)
+  var_scores <- cbind(unique(all_lengths[,1:3]),
+                      COUNT=aggregate(as.numeric(all_lengths$CNT), by=list(Category=paste(all_lengths$CHR, all_lengths$POS, all_lengths$ALT, sep="_")), FUN=sum)$x,
+                      VFS=temp$x)
+  return(var_scores)
 }
 
 ## @USER: Please write an appropriate 'wrapper' function to apply GenerateVariantFS() to each patient (the function expects that the BAMs and VCFs from all plasma samples of that patient are provided at once)
