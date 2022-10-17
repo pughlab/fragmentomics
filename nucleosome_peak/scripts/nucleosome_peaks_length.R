@@ -73,9 +73,9 @@ for (i in c(1:length(chrs))) {
   merged <- nucleosomes[data, roll = "nearest"]
   merged$distance <- abs(merged$mid - merged$peak)
   
-  ### Seperate out into reads within 1000bp from peak
-  proximal <- merged[merged$distance < 1000 & merged$length < 600, ]
-  distal <- merged[merged$distance >= 1000 & merged$length < 600, ]
+  ### Seperate out into reads within 500bp from peak
+  proximal <- merged[merged$distance < 500 & merged$length < 600, ]
+  distal <- merged[merged$distance >= 500 & merged$length < 600, ]
 
   ### Count length frequencies
   lengths <- data.frame(length = c(1:600))
