@@ -1,7 +1,6 @@
-
-
 library(optparse)
 library(vcfR)
+library(stringr)
 
 ## Set script variables
 option_list <- list(
