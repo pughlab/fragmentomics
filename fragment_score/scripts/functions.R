@@ -141,13 +141,13 @@ GeneratePatientFS <- function(ref, bamfile) {
 
 # Input required: Reference dataset (from step 3 OR from pre-supplied data), list of VCFs for plasma samples of the same patient (excluding germline variants and indels), and string of file names for plasma BAM files.
 
-GenerateVariantFS <- function(ref, VCF, bam_file, id) {
+GenerateVariantFS <- function(ref, vcf, bam_file, id) {
   require(dplyr)
   require(Rsamtools)
   
   ## @USER: Line 145 refers to column names corresponding to Roche AVENIO VCFs. If the column names of your local pipeline are different, please change correspondingly
   ## @USER: Column V1 is the chromosome number, V2 is the chromosome position, V5 is the alternate base
-  variants <- unique(data.frame(CHR=VCF$CHROM, POS=VCF$POS, ALT=VCF$ALT)) # generates df of all unique variants ever seen in plasma of this patient
+  variants <- unique(data.frame(CHR=vcf$CHROM, POS=vcf$POS, ALT=vcf$ALT, REF=vcf$REF)) # generates df of all unique variants ever seen in plasma of this patient
   
   if (nrow(variants) == 0) {print(paste0("No variants detected"))}
   else {
@@ -182,23 +182,59 @@ GenerateVariantFS <- function(ref, VCF, bam_file, id) {
         return(res)
       }
       
-      var_lengths <- as.data.frame(t(mapply(FragmentsWithVariants2, Chr=variants$CHR, Pos=as.numeric(variants$POS), Alt=variants$ALT, i=1:nrow(variants), MoreArgs=list(Bam=bam))))
+      FragmentsWithoutVariants2 <- function(Chr, Pos, Ref, i, Bam) {
+        base <- substring(as.character(Bam[[i]]$seq), Pos-Bam[[i]]$pos+1, Pos-Bam[[i]]$pos+1)
+        lengths <- abs(Bam[[i]]$isize[base == Ref])
+        res <- tibble(CHR=rep(Chr, length(lengths)), POS=rep(Pos, length(lengths)), REF=rep(Ref, length(lengths)), LEN=lengths)
+        return(res)
+      }
+      
+      var_lengths <- as.data.frame(t(mapply(FragmentsWithVariants2, 
+                                            Chr=variants$CHR, 
+                                            Pos=as.numeric(variants$POS), 
+                                            Alt=variants$ALT,
+                                            i=1:nrow(variants), 
+                                            MoreArgs=list(Bam=bam))))
       var_lengths <- data.frame(cbind(CHR=unlist(var_lengths$CHR), 
                                       POS=as.numeric(unlist(var_lengths$POS)), 
                                       ALT=unlist(var_lengths$ALT), 
                                       LEN=as.numeric(unlist(var_lengths$LEN)),
                                       CNT=1))
+      
       rownames(var_lengths) <- NULL
       var_lengths$LEN <- as.numeric(var_lengths$LEN)
       var_lengths$FS <- ref[var_lengths$LEN]
       
       all_lengths <- rbind(all_lengths, var_lengths)
+      
+      ### Repeat for wildtype fragments
+      wt_lengths <- as.data.frame(t(mapply(FragmentsWithoutVariants2, 
+                                           Chr=variants$CHR, 
+                                           Pos=as.numeric(variants$POS), 
+                                           Ref=variants$REF,
+                                           i=1:nrow(variants), 
+                                           MoreArgs=list(Bam=bam))))
+      wt_lengths <- data.frame(cbind(CHR=unlist(wt_lengths$CHR), 
+                                     POS=as.numeric(unlist(wt_lengths$POS)), 
+                                     REF=unlist(wt_lengths$REF), 
+                                     LEN=as.numeric(unlist(wt_lengths$LEN)),
+                                     CNT=1))
+      
+      rownames(wt_lengths) <- NULL
+      wt_lengths$LEN <- as.numeric(wt_lengths$LEN)
+      wt_lengths$FS <- ref[wt_lengths$LEN]
     }
   }
-  temp <- aggregate(all_lengths$FS, by=list(Category=paste(all_lengths$CHR, all_lengths$POS, all_lengths$ALT, sep="_")), FUN=mean)
-  var_scores <- cbind(unique(all_lengths[,1:3]),
-                      COUNT=aggregate(as.numeric(all_lengths$CNT), by=list(Category=paste(all_lengths$CHR, all_lengths$POS, all_lengths$ALT, sep="_")), FUN=sum)$x,
-                      VFS=temp$x)
+  temp <- all_lengths %>%
+    group_by(CHR, POS, ALT) %>%
+    dplyr::summarize(VFS = mean(FS, na.rm = TRUE),
+                     COUNT_VAR = n())
+  temp2 <- wt_lengths %>%
+    group_by(CHR, POS, REF) %>%
+    dplyr::summarize(WFS = mean(FS, na.rm = TRUE),
+                     COUNT_WT = n())
+  
+  var_scores <- merge(temp, temp2, by = c("CHR", "POS"))
   return(var_scores)
 }
 

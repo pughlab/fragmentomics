@@ -42,14 +42,16 @@ v1 <- as.numeric(sapply(str_split(x, ",", n = Inf), "[[", 1))
 v2 <- as.numeric(sapply(str_split(x, ",", n = Inf), "[[", 2))
 vcf$vaf <- v2/(v1 + v2)
 
+#vcf$REF <- substr(vcf$REF,1,1)
+#vcf$ALT <- substr(vcf$ALT,1,1)
+#vcf <- vcf[!(vcf$REF == vcf$ALT), ]
+
 if (type == "germline") {
   vcf <- vcf[(vcf$vaf > 0.45 & vcf$vaf < 0.55), ]
 }
 
 ## Run script
 variant_scores <- GenerateVariantFS(ref, vcf, bam_file, id)
-variant_scores <- variant_scores[variant_scores$COUNT > quantile(variant_scores$COUNT, 0.1), ]
-variant_scores <- merge(variant_scores, vcf[, c("CHROM", "POS", "ALT", "vaf")], by.x = c("CHR", "POS", "ALT"), by.y = c("CHROM", "POS", "ALT"))
-write.table(variant_score, file.path(outdir, paste0(id, "_", type, ".txt")), sep = "\t", row.names = FALSE)
+write.table(variant_scores, file.path(outdir, paste0(id, "_", type, ".txt")), sep = "\t", row.names = FALSE)
 
 q('no')
