@@ -228,13 +228,34 @@ GenerateVariantFS <- function(ref, vcf, bam_file, id) {
   temp <- all_lengths %>%
     group_by(CHR, POS, ALT) %>%
     dplyr::summarize(VFS = mean(FS, na.rm = TRUE),
-                     COUNT_VAR = n())
+                     COUNT_VAR = n(),
+                     LENGTH_VAR = mean(LEN, na.rm = TRUE),
+                     var_s = sum((LEN - mean(LEN))^2))
   temp2 <- wt_lengths %>%
     group_by(CHR, POS, REF) %>%
     dplyr::summarize(WFS = mean(FS, na.rm = TRUE),
-                     COUNT_WT = n())
+                     COUNT_WT = n(),
+                     LENGTH_WT = mean(LEN, na.rm = TRUE),
+                     wt_s = sum((LEN - mean(LEN))^2))
   
   var_scores <- merge(temp, temp2, by = c("CHR", "POS"))
+  var_scores$s <- (var_scores$var_s + var_scores$wt_s)/(var_scores$COUNT_VAR + var_scores$COUNT_WT - 2)
+  var_scores$t <- (var_scores$LENGTH_VAR - var_scores$LENGTH_WT)/sqrt(var_scores$s*((1/var_scores$COUNT_VAR) + (1/var_scores$COUNT_WT)))
+  var_scores$t_test <- pt(var_scores$t, var_scores$COUNT_VAR + var_scores$COUNT_WT - 2, lower.tail = TRUE)
+  ks_test <- c()
+  for (i in c(1:nrow(var_scores))) {
+    variant <- var_scores[i, c("CHR", "POS")]
+    CHR <- variant$CHR
+    POS <- variant$POS
+    ks <- ks.test(all_lengths$LEN[all_lengths$CHR == CHR &
+                                all_lengths$POS == POS],
+                  wt_lengths$LEN[wt_lengths$CHR == CHR &
+                               wt_lengths$POS == POS],
+                  alternative = "less")$p.value
+    ks_test <- c(ks_test, ks)
+    }  
+  var_scores$ks_test <- ks_test  
+  var_scores <- var_scores[, c("CHR", "POS", "ALT", "REF", "COUNT_WT", "COUNT_VAR", "LENGTH_WT", "LENGTH_VAR", "WFS", "VFS", "t_test", "ks_test")]  
   return(var_scores)
 }
 

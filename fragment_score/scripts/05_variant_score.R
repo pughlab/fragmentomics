@@ -41,10 +41,9 @@ x <- str_split_fixed(vcf[,10], ":", n = Inf)[, 2]
 v1 <- as.numeric(sapply(str_split(x, ",", n = Inf), "[[", 1))
 v2 <- as.numeric(sapply(str_split(x, ",", n = Inf), "[[", 2))
 vcf$vaf <- v2/(v1 + v2)
-
-#vcf$REF <- substr(vcf$REF,1,1)
-#vcf$ALT <- substr(vcf$ALT,1,1)
-#vcf <- vcf[!(vcf$REF == vcf$ALT), ]
+vcf$ALT_F1R2 <- str_split_fixed(vcf[,10], ":", n = Inf)[, 4]
+vcf$ALT_F2R1 <- str_split_fixed(vcf[,10], ":", n = Inf)[, 5]
+vcf <- vcf[vcf$ALT_F1R2 > 0 & vcf$ALT_F2R1 > 0, ]
 
 if (type == "germline") {
   vcf <- vcf[(vcf$vaf > 0.45 & vcf$vaf < 0.55), ]
