@@ -1,0 +1,6 @@
+site_files:
+  Eye: /cluster/projects/pughlab/bin/Griffin/sites/uveal/eye_dnase_merged.high_mapability.txt
+  Liver_atac: /cluster/projects/pughlab/bin/Griffin/sites/uveal/liver_atac_merged.high_mapability.txt
+  Liver_dnase: /cluster/projects/pughlab/bin/Griffin/sites/uveal/liver_dnase_merged.high_mapability.txt
+  Liver_hg38: /cluster/projects/pughlab/bin/Griffin/sites/uveal/liver_hg38_merged.high_mapability.txt
+  stop: /cluster/projects/pughlab/bin/Griffin/sites/uveal/stop.high_mapability.txt

@@ -1,0 +1,15 @@
+site_files:
+  B_cell: /cluster/projects/pughlab/bin/Griffin/sites/Immune/B_cell_hg38.txt
+  CD14_monocyte: /cluster/projects/pughlab/bin/Griffin/sites/Immune/CD14_monocyte_hg38.txt
+  CD34_myeloid_progenitor: /cluster/projects/pughlab/bin/Griffin/sites/Immune/CD34_myeloid_progenitor_hg38.txt
+  CD4_T_cell: /cluster/projects/pughlab/bin/Griffin/sites/Immune/CD4_T_cell_hg38.txt
+  CD8_T_cell: /cluster/projects/pughlab/bin/Griffin/sites/Immune/CD8_T_cell_hg38.txt
+  Macrophage_inflammatory: /cluster/projects/pughlab/bin/Griffin/sites/Immune/Macrophage_inflammatory_hg38.txt
+  Macrophage_suppressor: /cluster/projects/pughlab/bin/Griffin/sites/Immune/Macrophage_suppressor_hg38.txt
+  Naive_CD8_T_cell: /cluster/projects/pughlab/bin/Griffin/sites/Immune/Naive_CD8_T_cell_hg38.txt
+  NK_cell: /cluster/projects/pughlab/bin/Griffin/sites/Immune/NK_cell_hg38.txt
+  T_cell: /cluster/projects/pughlab/bin/Griffin/sites/Immune/T_cell_hg38.txt
+  T_helper1_cell: /cluster/projects/pughlab/bin/Griffin/sites/Immune/T_helper1_cell_hg38.txt
+  T_helper2_cell: /cluster/projects/pughlab/bin/Griffin/sites/Immune/T_helper2_cell_hg38.txt
+  T_reg_cell: /cluster/projects/pughlab/bin/Griffin/sites/Immune/T_reg_cell_hg38.txt
+  stop: /cluster/projects/pughlab/bin/Griffin/stop.txt

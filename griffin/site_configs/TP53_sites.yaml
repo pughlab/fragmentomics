@@ -1,0 +1,12 @@
+site_files:
+  TP53_Nguyen: /cluster/projects/pughlab/bin/Griffin/sites/TP53/TP53_Nguyen_hg38.txt
+  TP53_Hafner: /cluster/projects/pughlab/bin/Griffin/sites/TP53/TP53_Hafner_hg38.txt
+  TP53_shared: /cluster/projects/pughlab/bin/Griffin/sites/TP53/TP53_shared_hg38.txt
+  TP53_control: /cluster/projects/pughlab/bin/Griffin/sites/TP53/TP53_control_hg38.txt
+  TP53_targets_exonSpliceAcceptor: /cluster/projects/pughlab/bin/Griffin/sites/TP53/tp53_exonSpliceAcceptor_hg38.high_mapability.txt
+  TP53_targets_exonSpliceDonor: /cluster/projects/pughlab/bin/Griffin/sites/TP53/tp53_exonSpliceDonor_hg38.high_mapability.txt
+  TP53_targets_StartCodon: /cluster/projects/pughlab/bin/Griffin/sites/TP53/tp53_StartCodon_hg38.high_mapability.txt
+  TP53_targets_StopCodon: /cluster/projects/pughlab/bin/Griffin/sites/TP53/tp53_StopCodon_hg38.high_mapability.txt
+  TP53_targets_TSS: /cluster/projects/pughlab/bin/Griffin/sites/TP53/tp53_TSS_hg38.high_mapability.txt
+  TP53_targets_TSE: /cluster/projects/pughlab/bin/Griffin/sites/TP53/tp53_TSE_hg38.high_mapability.txt
+  stop: /cluster/projects/pughlab/bin/Griffin/stop.txt

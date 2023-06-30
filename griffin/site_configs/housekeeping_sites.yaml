@@ -1,0 +1,8 @@
+site_files:
+  housekeeping_exonSpliceAcceptor: /cluster/projects/pughlab/bin/Griffin/sites/housekeeping/housekeeping_exonSpliceAcceptor_hg38.high_mapability.txt
+  housekeeping_exonSpliceDonor: /cluster/projects/pughlab/bin/Griffin/sites/housekeeping/housekeeping_exonSpliceDonor_hg38.high_mapability.txt
+  housekeeping_StartCodon: /cluster/projects/pughlab/bin/Griffin/sites/housekeeping/housekeeping_StartCodon_hg38.high_mapability.txt
+  housekeeping_StopCodon: /cluster/projects/pughlab/bin/Griffin/sites/housekeeping/housekeeping_StopCodon_hg38.high_mapability.txt
+  housekeeping_TSE: /cluster/projects/pughlab/bin/Griffin/sites/housekeeping/housekeeping_TSE_hg38.high_mapability.txt
+  housekeeping_TSS: /cluster/projects/pughlab/bin/Griffin/sites/housekeeping/housekeeping_TSS_hg38.high_mapability.txt
+  stop: /cluster/projects/pughlab/bin/Griffin/sites/stop.high_mapability.txt

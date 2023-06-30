@@ -1,0 +1,25 @@
+site_files:
+  ACC: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/ACC_top_10000.txt
+  BLCA: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/BLCA_top_10000.txt
+  BRCA: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/BRCA_top_10000.txt
+  CESC: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/CESC_top_10000.txt
+  CHOL: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/CHOL_top_10000.txt
+  COAD: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/COAD_top_10000.txt
+  ESCA: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/ESCA_top_10000.txt
+  GBM: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/GBM_top_10000.txt
+  HNSC: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/HNSC_top_10000.txt
+  KIRC: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/KIRC_top_10000.txt
+  KIRP: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/KIRP_top_10000.txt
+  LGG: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/LGG_top_10000.txt
+  LIHC: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/LIHC_top_10000.txt
+  LUAD: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/LUAD_top_10000.txt
+  LUSC: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/LUSC_top_10000.txt
+  MESO: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/MESO_top_10000.txt
+  PCPG: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/PCPG_top_10000.txt
+  PRAD: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/PRAD_top_10000.txt
+  SKCM: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/SKCM_top_10000.txt
+  STAD: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/STAD_top_10000.txt
+  TGCT: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/TGCT_top_10000.txt
+  THCA: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/THCA_top_10000.txt
+  UCEC: /cluster/projects/pughlab/bin/Griffin/sites/TCGA/UCEC_top_10000.txt
+  stop: /cluster/projects/pughlab/bin/Griffin/stop.txt

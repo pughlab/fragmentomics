@@ -1,0 +1,18 @@
+site_files:
+  Cancer_epithelial: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Cancer_epithelial_DHS.top_10000.txt
+  Cardiac: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Cardiac_DHS.top_10000.txt
+  Digestive: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Digestive_DHS.top_10000.txt
+  Lymphoid: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Lymphoid_DHS.top_10000.txt
+  Musculoskeletal: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Musculoskeletal_DHS.top_10000.txt
+  Myeloid_erythroid: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Myeloid_erythroid_DHS.top_10000.txt
+  Neural: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Neural_DHS.top_10000.txt
+  Organ_devel_renal: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Organ_devel_renal_DHS.top_10000.txt
+  Placental_trophoblast: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Placental_trophoblast_DHS.top_10000.txt
+  Primitive_embryonic: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Primitive_embryonic_DHS.top_10000.txt
+  Pulmonary: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Pulmonary_devel_DHS.top_10000.txt
+  Renal_cancer: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Renal_cancer_DHS.top_10000.txt
+  Stromal_A: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Stromal_A_DHS.top_10000.txt
+  Stromal_B: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Stromal_B_DHS.top_10000.txt
+  Tissue_invariant: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Tissue_invariant_DHS.top_10000.txt
+  Vascular_endothelial: /cluster/projects/pughlab/bin/Griffin/sites/DHS/Vascular_endothelial_DHS.top_10000.txt
+  stop: /cluster/projects/pughlab/bin/Griffin/stop.txt

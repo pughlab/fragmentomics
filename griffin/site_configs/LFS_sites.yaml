@@ -1,0 +1,7 @@
+site_files:
+  LFS_hypo: /cluster/projects/pughlab/bin/Griffin/sites/LFS/LFS_hypo.txt
+  LFS_hyper: /cluster/projects/pughlab/bin/Griffin/sites/LFS/LFS_hyper.txt
+  EZH2_targets: /cluster/projects/pughlab/bin/Griffin/sites/LFS/EZH2_targets_TSS_hg38.high_mapability.txt
+  H3K27me3: /cluster/projects/pughlab/bin/Griffin/sites/LFS/H3K27me3_TSS_hg38.high_mapability.txt
+  TP53_DMR: /cluster/projects/pughlab/bin/Griffin/sites/LFS/TP53_DMR_hg38.high_mapability.txt
+  stop: /cluster/projects/pughlab/bin/Griffin/stop.txt
