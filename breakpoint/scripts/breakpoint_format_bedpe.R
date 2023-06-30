@@ -43,15 +43,15 @@ bedpe <- bedpe[bedpe$length <= 600, ]
 bedpe <- bedpe[, c("V1", "V2", "V6")]
 bedpe <- bedpe[order(factor(bedpe$V1, levels = chrs),
                      bedpe$V2), ]
-bedpe$Start <- ifelse(bedpe$V2 < bedpe$V6, bedpe$V2, bedpe$V6) - 1
-bedpe$End <- ifelse(bedpe$V6 > bedpe$V2, bedpe$V6, bedpe$V2) - 1
+bedpe$Start <- ifelse(bedpe$V2 < bedpe$V6, bedpe$V2, bedpe$V6)
+bedpe$End <- ifelse(bedpe$V6 > bedpe$V2, bedpe$V6, bedpe$V2)
 
-### Get 2 bases +/- breakpoint
-bedpe$front <- bedpe$Start + 3
-bedpe$Start <- bedpe$Start - 3
+### Get 25 bases +/- breakpoint
+bedpe$front <- bedpe$Start + 15
+bedpe$Start <- bedpe$Start - 15
 
-bedpe$back <- bedpe$End - 3
-bedpe$End <- bedpe$End + 3
+bedpe$back <- bedpe$End - 15
+bedpe$End <- bedpe$End + 15
 
 bedpe_1 <- bedpe[, c("V1", "Start", "front")]
 bedpe_2 <- bedpe[, c("V1", "back", "End")]

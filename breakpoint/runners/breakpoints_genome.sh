@@ -1,8 +1,8 @@
-INPUTDIR=/cluster/projects/pughlab/external_data/TGL49_CHARM/LFS/LFS_WG/bams
-basedir=/cluster/projects/pughlab/projects/CHARM/LFS/breakpoints
+INPUTDIR=/cluster/projects/pughlab/hereditary/external_data/TGL49_CHARM/LFS/LFS_WG/bams
+basedir=/cluster/projects/pughlab/hereditary/projects/CHARM/LFS/breakpoint
 ref=/cluster/projects/pughlab/references/TGL/hg38/hg38_random.fa
 picard_dir=/cluster/tools/software/picard/2.10.9
-frags=/cluster/projects/pughlab/bin/fragmentomics/R
+frags=/cluster/projects/pughlab/bin/fragmentomics/v2/breakpoint/R
 outdir=$basedir/output/genome
 shdir=$basedir/sh_scripts/genome
 
@@ -25,7 +25,7 @@ module load bedtools/2.27.1
 module load R/4.0.0\n" > $shdir/${bam}.sh
 
 ### Remove duplicates
-echo -e "java -jar $picard_dir/picard.jar MarkDuplicates \
+echo -e "#java -jar $picard_dir/picard.jar MarkDuplicates \
 I=$INPUTDIR/${bam}.bam \
 O=$outdir/${bam}_deduped.bam \
 M=$outdir/${bam}_metrics.txt \
@@ -33,39 +33,40 @@ TMP_DIR=$outdir \
 REMOVE_DUPLICATES=true \
 REMOVE_SEQUENCING_DUPLICATES=true
 
-samtools sort -n $outdir/${bam}_deduped.bam -o $outdir/${bam}_deduped_sorted.bam\n" >> $shdir/${bam}.sh
+#samtools sort -n $outdir/${bam}_deduped.bam -o $outdir/${bam}_deduped_sorted.bam\n" >> $shdir/${bam}.sh
 
 ### Sort bam by name and convert to bedpe format
-echo -e "samtools view -bf 0x2 $outdir/${bam}_deduped_sorted.bam | \
+echo -e "#samtools view -bf 0x2 $outdir/${bam}_deduped_sorted.bam | \
 bedtools bamtobed \
 -i stdin \
 -bedpe > $outdir/${bam}.bedpe\n" >> $shdir/${bam}.sh
 
 ### Format bedpe to bed
-echo -e "Rscript $frags/breakpoint_format_bedpe.R \
+echo -e "#Rscript $frags/breakpoint_format_bedpe.R \
 --id $bam \
 --bedpe $outdir/${bam}.bedpe \
 --outdir $outdir\n" >> $shdir/${bam}.sh
 
 ### Get FASTA sequences 
-echo -e "bedtools getfasta \
+echo -e "#bedtools getfasta \
 -bedOut \
 -fi $ref \
 -bed $outdir/${bam}_5.bed > $outdir/${bam}_fasta_5.bed
-bedtools getfasta \
+
+#bedtools getfasta \
 -bedOut \
 -fi $ref \
 -bed $outdir/${bam}_3.bed > $outdir/${bam}_fasta_3.bed\n" >> $shdir/${bam}.sh
 
 ### Convert FASTA to end motif context frequencies
-echo -e "Rscript $frags/motif_get_contexts.R \
+echo -e "Rscript $frags/breakpoint_get_contexts.R \
 --id $bam \
 --fasta_5 $outdir/${bam}_fasta_5.bed \
 --fasta_3 $outdir/${bam}_fasta_3.bed \
 --outdir $outdir\n" >> $shdir/${bam}.sh
 
 ### Remove intermediate files
-echo -e "if [[ -f "$outdir/${bam}_raw.txt" ]]
+echo -e "if [[ -f "$outdir/${bam}_count.txt" ]]
 then
 echo -e \"Output completed sucessfully\"
 rm $outdir/${bam}*.bam*
@@ -80,5 +81,5 @@ cd $shdir
 
 ls *.sh > files
 for file in $(cat files);do
-sbatch -c 1 -t 10:00:00 -p all --mem 24G $file
+sbatch -c 1 -t 10:00:00 -p superhimem --mem 120G $file
 done

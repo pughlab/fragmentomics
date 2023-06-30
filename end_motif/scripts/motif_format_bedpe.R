@@ -43,8 +43,8 @@ bedpe <- bedpe[bedpe$length <= 600, ]
 bedpe <- bedpe[, c("V1", "V2", "V6")]
 bedpe <- bedpe[order(factor(bedpe$V1, levels = chrs),
                      bedpe$V2), ]
-bedpe$Start <- ifelse(bedpe$V2 < bedpe$V6, bedpe$V2, bedpe$V6) - 1
-bedpe$End <- ifelse(bedpe$V6 > bedpe$V2, bedpe$V6, bedpe$V2) - 1
+bedpe$Start <- ifelse(bedpe$V2 < bedpe$V6, bedpe$V2, bedpe$V6) # - 1
+bedpe$End <- ifelse(bedpe$V6 > bedpe$V2, bedpe$V6, bedpe$V2) # - 1
 
 ### Get last 4 bases
 bedpe$front <- bedpe$Start + 4
